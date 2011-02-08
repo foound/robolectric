@@ -1,74 +1,31 @@
 package com.xtremelabs.robolectric;
 
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.AlertDialog;
-import android.app.Application;
-import android.app.Dialog;
-import android.app.ListActivity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.appwidget.AppWidgetManager;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.Intent;
-import android.content.res.AssetManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.database.sqlite.SQLiteCursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.app.*;
+import android.appwidget.*;
+import android.bluetooth.*;
+import android.content.*;
+import android.content.res.*;
+import android.database.sqlite.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
 import android.hardware.Camera;
-import android.location.Geocoder;
-import android.location.LocationManager;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.widget.AdapterView;
-import android.widget.ExpandableListView;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RemoteViews;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ZoomButtonsController;
-import com.xtremelabs.robolectric.bytecode.RobolectricInternals;
-import com.xtremelabs.robolectric.bytecode.ShadowWrangler;
-import com.xtremelabs.robolectric.shadows.*;
-import com.xtremelabs.robolectric.tester.org.apache.http.FakeHttpLayer;
-import com.xtremelabs.robolectric.tester.org.apache.http.HttpRequestInfo;
-import com.xtremelabs.robolectric.tester.org.apache.http.RequestMatcher;
-import com.xtremelabs.robolectric.util.Scheduler;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.impl.client.DefaultRequestDirector;
+import android.location.*;
+import android.media.*;
+import android.net.*;
+import android.os.*;
+import android.view.*;
+import android.webkit.*;
+import android.widget.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
+import org.apache.http.*;
+import org.apache.http.impl.client.*;
+
+import com.xtremelabs.robolectric.bytecode.*;
+import com.xtremelabs.robolectric.shadows.*;
+import com.xtremelabs.robolectric.tester.org.apache.http.*;
+import com.xtremelabs.robolectric.util.*;
 
 @SuppressWarnings({"UnusedDeclaration"})
 public class Robolectric {
@@ -208,6 +165,7 @@ public class Robolectric {
                 ShadowSQLiteCursor.class,
                 ShadowSQLiteOpenHelper.class,
                 ShadowSQLiteQueryBuilder.class,
+                ShadowSQLiteStatement.class,
                 ShadowSurfaceView.class,
                 ShadowTextUtils.class,
                 ShadowTextView.class,

@@ -1,16 +1,14 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.database.AbstractCursor;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.internal.RealObject;
+import android.database.*;
 
-@SuppressWarnings({"UnusedDeclaration"})
+import com.xtremelabs.robolectric.internal.*;
+
 @Implements(AbstractCursor.class)
 public class ShadowAbstractCursor {
     @RealObject private AbstractCursor realAbstractCursor;
 
-    private int currentRowNumber = 0;
+    private int currentRowNumber = -1;
 
     @Implementation
     public boolean moveToFirst() {

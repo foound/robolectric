@@ -1,34 +1,22 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.app.Application;
-import android.appwidget.AppWidgetManager;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Resources;
-import android.os.Looper;
-import android.view.LayoutInflater;
-import android.widget.Toast;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.internal.RealObject;
-import com.xtremelabs.robolectric.res.ResourceLoader;
-import com.xtremelabs.robolectric.tester.org.apache.http.FakeHttpLayer;
-import com.xtremelabs.robolectric.util.Scheduler;
+import static com.xtremelabs.robolectric.Robolectric.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import android.app.*;
+import android.appwidget.*;
+import android.content.*;
+import android.content.res.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import static com.xtremelabs.robolectric.Robolectric.newInstanceOf;
-import static com.xtremelabs.robolectric.Robolectric.shadowOf;
+import java.util.*;
+
+import com.xtremelabs.robolectric.*;
+import com.xtremelabs.robolectric.internal.*;
+import com.xtremelabs.robolectric.res.*;
+import com.xtremelabs.robolectric.tester.org.apache.http.*;
+import com.xtremelabs.robolectric.util.*;
 
 /**
  * Shadows the {@code android.app.Application} class.
@@ -75,7 +63,7 @@ public class ShadowApplication extends ShadowContextWrapper {
     private final Looper mainLooper = newInstanceOf(Looper.class);
     private Looper currentLooper = mainLooper;
     private Scheduler backgroundScheduler = new Scheduler();
-    private Map<String, Hashtable<String, Object>> sharedPreferenceMap = new HashMap<String, Hashtable<String, Object>>();
+    private Map<String, HashMap<String, Object>> sharedPreferenceMap = new HashMap<String, HashMap<String, Object>>();
     private ArrayList<Toast> shownToasts = new ArrayList<Toast>();
     private ShadowAlertDialog latestAlertDialog;
     private ShadowDialog latestDialog;
@@ -218,7 +206,8 @@ public class ShadowApplication extends ShadowContextWrapper {
      *
      * @return the {@code ResourceLoader} associated with this Application
      */
-    public ResourceLoader getResourceLoader() {
+    @Override
+	public ResourceLoader getResourceLoader() {
         return resourceLoader;
     }
 
@@ -329,7 +318,7 @@ public class ShadowApplication extends ShadowContextWrapper {
         return currentLooper;
     }
 
-    public Map<String, Hashtable<String, Object>> getSharedPreferenceMap() {
+    public Map<String, HashMap<String, Object>> getSharedPreferenceMap() {
         return sharedPreferenceMap;
     }
 

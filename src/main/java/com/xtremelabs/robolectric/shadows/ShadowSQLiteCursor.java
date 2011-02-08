@@ -1,12 +1,10 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.database.sqlite.SQLiteCursor;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
+import android.database.sqlite.*;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
+
+import com.xtremelabs.robolectric.internal.*;
 
 /**
  * Simulates an Android Cursor object, by wrapping a JDBC ResultSet.
