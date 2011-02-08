@@ -1,18 +1,16 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.view.View;
-import android.widget.Button;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.internal.RealObject;
+import static com.xtremelabs.robolectric.Robolectric.*;
 
-import java.lang.reflect.Constructor;
+import android.app.*;
+import android.content.*;
+import android.view.*;
+import android.widget.*;
 
-import static com.xtremelabs.robolectric.Robolectric.shadowOf;
+import java.lang.reflect.*;
+
+import com.xtremelabs.robolectric.*;
+import com.xtremelabs.robolectric.internal.*;
 
 @SuppressWarnings( { "UnusedDeclaration" })
 @Implements(AlertDialog.class)
@@ -100,7 +98,8 @@ public class ShadowAlertDialog extends ShadowDialog {
      *
      * @return the title of the dialog
      */
-    public String getTitle() {
+    @Override
+	public String getTitle() {
         return title;
     }
 
@@ -220,10 +219,16 @@ public class ShadowAlertDialog extends ShadowDialog {
             this.title = context.getResources().getString(titleId);
             return realBuilder;
         }
-
+        
         @Implementation
         public AlertDialog.Builder setMessage(CharSequence message) {
-            this.message = message.toString();
+        	this.message = message.toString();
+        	return realBuilder;
+        }
+
+        @Implementation
+        public AlertDialog.Builder setMessage(int messageId) {
+            this.message = context.getResources().getString(messageId);
             return realBuilder;
         }
 
@@ -233,6 +238,14 @@ public class ShadowAlertDialog extends ShadowDialog {
             this.positiveListener = listener;
             return realBuilder;
         }
+        @Implementation
+        public AlertDialog.Builder setPositiveButton (int textId, DialogInterface.OnClickListener listener) {
+            this.positiveText = context.getResources().getString(textId);
+            this.positiveListener = listener;
+            return realBuilder;
+        }
+
+
 
         @Implementation
         public AlertDialog.Builder setNegativeButton(CharSequence text, final DialogInterface.OnClickListener listener) {
@@ -242,11 +255,27 @@ public class ShadowAlertDialog extends ShadowDialog {
         }
 
         @Implementation
+        public AlertDialog.Builder setNegativeButton (int textId, DialogInterface.OnClickListener listener) {
+        	this.negativeText = context.getResources().getString(textId);
+        	this.negativeListener = listener;
+        	return realBuilder;
+        }
+
+
+        @Implementation
         public AlertDialog.Builder setNeutralButton(CharSequence text, final DialogInterface.OnClickListener listener) {
             this.neutralText = text;
             this.neutralListener = listener;
             return realBuilder;
         }
+
+        @Implementation
+        public AlertDialog.Builder setNeutralButton (int textId, DialogInterface.OnClickListener listener) {
+        	this.neutralText = context.getResources().getString(textId);
+        	this.neutralListener = listener;
+        	return realBuilder;
+        }
+
 
         @Implementation
         public AlertDialog.Builder setCancelable(boolean cancelable) {
