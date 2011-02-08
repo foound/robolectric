@@ -1,26 +1,24 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import static org.junit.Assert.*;
+
+import android.content.*;
 import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.WithTestDefaultsRunner;
-import com.xtremelabs.robolectric.tester.android.content.TestSharedPreferences;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import android.preference.*;
 
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.*;
+import org.junit.runner.*;
+
+import com.xtremelabs.robolectric.*;
+import com.xtremelabs.robolectric.tester.android.content.*;
 
 @RunWith(WithTestDefaultsRunner.class)
 public class PreferenceManagerTest {
     @Test
     public void shouldProvideDefaultSharedPreferences() throws Exception {
-        Map<String, Hashtable<String, Object>> content = Robolectric.getShadowApplication().getSharedPreferenceMap();
+        Map<String, HashMap<String, Object>> content = Robolectric.getShadowApplication().getSharedPreferenceMap();
 
         TestSharedPreferences testPrefs = new TestSharedPreferences(content, "__default__", Context.MODE_PRIVATE);
         Editor editor = testPrefs.edit();

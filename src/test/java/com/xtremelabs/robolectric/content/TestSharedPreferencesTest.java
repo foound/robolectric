@@ -1,25 +1,23 @@
 package com.xtremelabs.robolectric.content;
 
-import android.content.SharedPreferences;
-import com.xtremelabs.robolectric.tester.android.content.TestSharedPreferences;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
-import java.util.HashMap;
-import java.util.Hashtable;
+import android.content.*;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import java.util.*;
+
+import org.junit.*;
+
+import com.xtremelabs.robolectric.tester.android.content.*;
 
 public class TestSharedPreferencesTest {
-    private HashMap<String, Hashtable<String, Object>> content;
+    private HashMap<String, HashMap<String, Object>> content;
     private SharedPreferences.Editor editor;
 
     @Before
     public void setUp() {
-        content = new HashMap<String, Hashtable<String, Object>>();
+        content = new HashMap<String, HashMap<String, Object>>();
 
         TestSharedPreferences testSharedPreferences = new TestSharedPreferences(content, "prefsName", 3);
         editor = testSharedPreferences.edit();
