@@ -18,6 +18,8 @@ public class ShadowBitmap {
     private int height;
     private String description = "";
     private int loadedFromResourceId = -1;
+    
+    private static Bitmap lastCreatedBitmap;
 
     @Implementation
     public boolean compress(Bitmap.CompressFormat format, int quality, OutputStream stream) {
@@ -41,6 +43,7 @@ public class ShadowBitmap {
         shadowBitmap.appendDescription("Bitmap (" + width + " x " + height + ")");
         shadowBitmap.setWidth(width);
         shadowBitmap.setHeight(height);
+        lastCreatedBitmap = scaledBitmap;
         return scaledBitmap;
     }
 
@@ -55,9 +58,14 @@ public class ShadowBitmap {
         }
         shadowBitmap.setWidth(dstWidth);
         shadowBitmap.setHeight(dstHeight);
+        lastCreatedBitmap = scaledBitmap;
         return scaledBitmap;
     }
 
+    public static Bitmap lastCreatedBitmap() {
+    	return lastCreatedBitmap;
+    }
+    
     public void appendDescription(String s) {
         description += s;
     }
