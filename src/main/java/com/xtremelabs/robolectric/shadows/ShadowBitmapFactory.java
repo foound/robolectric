@@ -1,23 +1,18 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.net.Uri;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.util.Join;
+import static com.xtremelabs.robolectric.Robolectric.*;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import android.content.res.*;
+import android.graphics.*;
+import android.graphics.BitmapFactory.Options;
+import android.net.*;
 
-import static com.xtremelabs.robolectric.Robolectric.shadowOf;
+import java.io.*;
+import java.util.*;
+
+import com.xtremelabs.robolectric.*;
+import com.xtremelabs.robolectric.internal.*;
+import com.xtremelabs.robolectric.util.*;
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(BitmapFactory.class)
@@ -44,6 +39,39 @@ public class ShadowBitmapFactory {
     public static Bitmap decodeFile(String pathName, BitmapFactory.Options options) {
         return create("file:" + pathName, options);
     }
+    
+    @Implementation
+    public static Bitmap decodeByteArray (byte[] data, int offset, int length) {
+    	return decodeByteArray(data, offset, length, new Options());
+    }
+    
+    @Implementation
+    public static Bitmap decodeByteArray (byte[] data, int offset, int length, BitmapFactory.Options opts) {
+    	DataInputStream dataIn = new DataInputStream(new ByteArrayInputStream(data));
+    	Bitmap bitmap = Robolectric.newInstanceOf(Bitmap.class);
+        ShadowBitmap shadowBitmap = shadowOf(bitmap);
+
+		try {
+			int width = dataIn.readInt();
+			int height = dataIn.readInt();
+			shadowBitmap.setWidth(width);
+			shadowBitmap.setHeight(height);
+			
+			String format = dataIn.readUTF();
+			
+			opts.outWidth = width;
+			opts.outHeight = height;
+			
+			opts.outMimeType = "image/" + format.toLowerCase();
+			
+			return bitmap;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+        
+    }
+    
 
     @Implementation
     public static Bitmap decodeStream(InputStream is) {

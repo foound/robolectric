@@ -1,15 +1,13 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.graphics.Bitmap;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.internal.RealObject;
+import static com.xtremelabs.robolectric.Robolectric.*;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import android.graphics.*;
 
-import static com.xtremelabs.robolectric.Robolectric.shadowOf;
+import java.io.*;
+
+import com.xtremelabs.robolectric.*;
+import com.xtremelabs.robolectric.internal.*;
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(Bitmap.class)
@@ -24,7 +22,11 @@ public class ShadowBitmap {
     @Implementation
     public boolean compress(Bitmap.CompressFormat format, int quality, OutputStream stream) {
         try {
-            stream.write((description + " compressed as " + format + " with quality " + quality).getBytes());
+        	DataOutputStream dataOut = new DataOutputStream(stream);
+        	dataOut.writeInt(width);
+        	dataOut.writeInt(height);
+        	dataOut.writeUTF(format.toString());
+        	dataOut.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
