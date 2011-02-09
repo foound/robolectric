@@ -172,6 +172,7 @@ public class Robolectric {
                 ShadowToast.class,
                 ShadowTypedArray.class,
                 ShadowTypedValue.class,
+                ShadowUri.class,
                 ShadowURLSpan.class,
                 ShadowView.class,
                 ShadowViewGroup.class,
