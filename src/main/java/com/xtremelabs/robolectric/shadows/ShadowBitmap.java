@@ -5,6 +5,7 @@ import static com.xtremelabs.robolectric.Robolectric.*;
 import android.graphics.*;
 
 import java.io.*;
+import java.util.*;
 
 import com.xtremelabs.robolectric.*;
 import com.xtremelabs.robolectric.internal.*;
@@ -20,6 +21,8 @@ public class ShadowBitmap {
     private int loadedFromResourceId = -1;
     
     private static Bitmap lastCreatedBitmap;
+    
+    public static Stack<Bitmap> recycledBitmaps = new Stack<Bitmap>();
 
     @Implementation
     public boolean compress(Bitmap.CompressFormat format, int quality, OutputStream stream) {
@@ -142,5 +145,9 @@ public class ShadowBitmap {
                 ", width=" + width +
                 ", height=" + height +
                 '}';
+    }
+    
+    @Implementation void recycle() {
+      	recycledBitmaps.push(realBitmap);
     }
 }

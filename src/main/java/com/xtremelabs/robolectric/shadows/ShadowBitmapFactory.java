@@ -18,7 +18,9 @@ import com.xtremelabs.robolectric.util.*;
 @Implements(BitmapFactory.class)
 public class ShadowBitmapFactory {
     private static Map<String, Point> widthAndHeightMap = new HashMap<String, Point>();
-
+    
+    public static Stack<BitmapFactory.Options> recentRunsOptions = new Stack<BitmapFactory.Options>();
+    
     @Implementation
     public static Bitmap decodeResource(Resources res, int id) {
         Bitmap bitmap = create("resource:" + getResourceName(id));
@@ -71,7 +73,6 @@ public class ShadowBitmapFactory {
 		}
         
     }
-    
 
     @Implementation
     public static Bitmap decodeStream(InputStream is) {
@@ -107,6 +108,8 @@ public class ShadowBitmapFactory {
         shadowBitmap.setHeight(widthAndHeight.y);
         options.outWidth = widthAndHeight.x;
         options.outHeight = widthAndHeight.y;
+        recentRunsOptions.push(options);
+        
         return bitmap;
     }
 

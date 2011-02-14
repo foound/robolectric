@@ -11,17 +11,25 @@ import com.xtremelabs.robolectric.internal.*;
 @Implements(Uri.class)
 public class ShadowUri {
 	@RealObject Uri uri;
-    private File file;
+    private String s;
 
+    @Implementation
     public static Uri fromFile(File file) {
     	Uri res = newInstanceOf(Uri.class);
-    	((ShadowUri)shadowOf_(res)).file = file;
+    	((ShadowUri)shadowOf_(res)).s = "file://" + file.getAbsolutePath();
+    	return res;
+    }
+    
+    @Implementation
+    public static Uri parse(String s) {
+    	Uri res = newInstanceOf(Uri.class);
+    	((ShadowUri)shadowOf_(res)).s = s;
     	return res;
     }
     
     @Override
     public boolean equals(Object obj) {
-    	return this.file.equals(((ShadowUri)obj).file);
+    	return this.s.equals(((ShadowUri)obj).s);
     }
     
     
