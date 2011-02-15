@@ -1,25 +1,18 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.content.res.AssetManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.internal.RealObject;
-import com.xtremelabs.robolectric.res.ResourceLoader;
+import static com.xtremelabs.robolectric.Robolectric.*;
 
-import java.io.InputStream;
-import java.util.Locale;
+import android.content.res.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.util.*;
 
-import static com.xtremelabs.robolectric.Robolectric.newInstanceOf;
-import static com.xtremelabs.robolectric.Robolectric.shadowOf;
+import java.io.*;
+import java.util.*;
+
+import com.xtremelabs.robolectric.*;
+import com.xtremelabs.robolectric.internal.*;
+import com.xtremelabs.robolectric.res.*;
 
 /**
  * Shadow of {@code Resources} that simulates the loading of resources
@@ -54,6 +47,11 @@ public class ShadowResources {
     @Implementation
     public String getString(int id) throws Resources.NotFoundException {
         return resourceLoader.getStringValue(id);
+    }
+    
+    @Implementation
+    public String getQuantityString(int id, int quantity, Object ... args) {
+    	return id + " " + (quantity == 1? "singular": "plural");
     }
 
     @Implementation

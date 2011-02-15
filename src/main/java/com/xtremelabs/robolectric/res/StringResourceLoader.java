@@ -1,6 +1,6 @@
 package com.xtremelabs.robolectric.res;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 
 public class StringResourceLoader extends XpathResourceXmlLoader implements ResourceValueConverter {
     private ResourceReferenceResolver<String> stringResolver = new ResourceReferenceResolver<String>("string");
@@ -10,7 +10,18 @@ public class StringResourceLoader extends XpathResourceXmlLoader implements Reso
     }
 
     public String getValue(int resourceId) {
-        return stringResolver.getValue(resourceExtractor.getResourceName(resourceId));
+        String escaped = stringResolver.getValue(resourceExtractor.getResourceName(resourceId));
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < escaped.length(); i++) {
+        	char c = escaped.charAt(i);
+        	if (c == '\\') {
+        		i++;
+        		sb.append(escaped.charAt(i));
+        	} else {
+        		sb.append(c);
+        	}
+        }
+        return sb.toString();
     }
 
     public String getValue(String resourceName, boolean isSystem) {
