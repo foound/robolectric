@@ -1,17 +1,13 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.internal.RealObject;
+import static com.xtremelabs.robolectric.Robolectric.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.view.*;
+import android.widget.*;
 
-import static com.xtremelabs.robolectric.Robolectric.shadowOf;
+import java.util.*;
+
+import com.xtremelabs.robolectric.internal.*;
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(ListView.class)
@@ -19,8 +15,8 @@ public class ShadowListView extends ShadowAdapterView {
     @RealObject private ListView realListView;
 
     private boolean itemsCanFocus;
-    private List<View> headerViews = new ArrayList<View>();
-    private List<View> footerViews = new ArrayList<View>();
+    private List<View> headerViews = null;
+    private List<View> footerViews = null;
 
     @Implementation
     public void setItemsCanFocus(boolean itemsCanFocus) {
@@ -45,14 +41,28 @@ public class ShadowListView extends ShadowAdapterView {
 
     @Implementation
     public void addHeaderView(View headerView) {
-        ensureAdapterNotSet("header");
+    	if (footerViews == null || headerViews == null)
+    		ensureAdapterNotSet("header");
+    	headerViews = new ArrayList<View>();
+    	footerViews = new ArrayList<View>();
         headerViews.add(headerView);
     }
 
     @Implementation
     public void addFooterView(View footerView, Object data, boolean isSelectable) {
-        ensureAdapterNotSet("footer");
+    	if (footerViews == null || headerViews == null)
+    		ensureAdapterNotSet("footer");
+    	headerViews = new ArrayList<View>();
+    	footerViews = new ArrayList<View>();
         footerViews.add(footerView);
+    }
+    
+    @Implementation public boolean removeHeaderView(View headerView) {
+    	return headerViews.remove(headerView);
+    }
+    
+    @Implementation public boolean removeFooterView(View footerView) {
+    	return footerViews.remove(footerView);
     }
 
     @Implementation
