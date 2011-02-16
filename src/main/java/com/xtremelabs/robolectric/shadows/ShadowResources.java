@@ -51,7 +51,13 @@ public class ShadowResources {
     
     @Implementation
     public String getQuantityString(int id, int quantity, Object ... args) {
-    	return id + " " + (quantity == 1? "singular": "plural");
+    	String s = id + " " + (quantity == 1? "singular": "plural");
+    	if (args != null) {
+    		for (Object o: args) {
+    			s += " " + o.toString();
+    		}
+    	}
+    	return s;
     }
 
     @Implementation
