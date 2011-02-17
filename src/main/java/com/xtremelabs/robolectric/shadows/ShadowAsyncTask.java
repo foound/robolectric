@@ -1,11 +1,9 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.os.AsyncTask;
-import android.os.ShadowAsyncTaskBridge;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.internal.RealObject;
+import android.os.*;
+
+import com.xtremelabs.robolectric.*;
+import com.xtremelabs.robolectric.internal.*;
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(AsyncTask.class)
@@ -24,11 +22,21 @@ public class ShadowAsyncTask<Params, Progress, Result> {
 
     @Implementation
     public boolean cancel(boolean mayInterruptIfRunning) {
-        if (hasRun) return false;
-        cancelled = true;
+    	System.out.println("cancel called on " + this);
+    	if (cancelled) return false;
+    	cancelled = true;
+    	if (hasRun) return false;
         return true;
     }
 
+    @Implementation
+    public final boolean isCancelled () {
+    	System.out.println("iscancelled called on " + this);
+    	return cancelled;
+    }
+
+
+    
 //    public Result get() throws java.lang.InterruptedException, java.util.concurrent.ExecutionException {
 //        return null;
 //    }
