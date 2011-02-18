@@ -1,12 +1,10 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.*;
+import android.database.sqlite.*;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import android.database.sqlite.SQLiteOpenHelper;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.internal.RealObject;
+
+import com.xtremelabs.robolectric.internal.*;
 
 /**
  * Shadow for {@code SQLiteOpenHelper}.  Provides basic support for retrieving
@@ -38,7 +36,9 @@ public class ShadowSQLiteOpenHelper {
     public synchronized SQLiteDatabase getReadableDatabase() {
         if (database == null) {
             database = SQLiteDatabase.openDatabase("path", null, 0);
+            System.out.println("realHelper onCreate");
             realHelper.onCreate(database);
+            System.out.println("realHelper onCreate FINISH");
         }
 
         realHelper.onOpen(database);

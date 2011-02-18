@@ -27,8 +27,9 @@ public class ShadowSQLiteDatabase {
     @Implementation
     public static SQLiteDatabase openDatabase(String path, SQLiteDatabase.CursorFactory factory, int flags) {
         try {
-            Class.forName("org.h2.Driver").newInstance();
-            connection = DriverManager.getConnection("jdbc:h2:mem:");
+            Class.forName("org.sqlite.JDBC").newInstance();
+            connection = DriverManager.getConnection("jdbc:sqlite::memory:");
+            // System.out.println("DB:: getConnection");
         } catch (Exception e) {
             throw new RuntimeException("SQL exception in openDatabase", e);
         }
@@ -38,33 +39,27 @@ public class ShadowSQLiteDatabase {
 
     @Implementation
     public long insert(String table, String nullColumnHack, ContentValues values) {
-    	values.put("_ID", seq());
-    	
         SQLStringAndBindings sqlInsertString = buildInsertString(table, values);
         try {
-            PreparedStatement statement = connection.prepareStatement(sqlInsertString.sql, Statement.RETURN_GENERATED_KEYS);
+        	// System.out.println("DB:: insert: " + sqlInsertString.sql);
+            PreparedStatement statement = connection.prepareStatement(sqlInsertString.sql);
             Iterator<Object> columns = sqlInsertString.columnValues.iterator();
             int i = 1;
             while (columns.hasNext()) {
-                statement.setObject(i++, columns.next());
+            	Object next = columns.next();
+                if (next instanceof byte[]) {
+                	statement.setBytes(i++, (byte[]) next);
+                } else {
+                	statement.setObject(i++, next);
+                }
             }
 
             statement.executeUpdate();
-            
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.first()) {
-                return resultSet.getLong(1);
-            }
         } catch (SQLException e) {
             throw new RuntimeException("SQL exception in insert", e);
         }
         return -1;
     }
-
-    private static int seq = 0;
-    private static synchronized int seq() {
-		return ++seq;
-	}
 
 	@Implementation
     public Cursor query(boolean distinct, String table, String[] columns,
@@ -76,13 +71,12 @@ public class ShadowSQLiteDatabase {
             where = buildWhereClause(selection, selectionArgs);
         }
 
-        String sql = SQLiteQueryBuilder.buildQueryString(distinct, table,
-                columns, where, groupBy, having, orderBy, limit);
+        String sql = SQLiteQueryBuilder.buildQueryString(distinct, table, columns, where, groupBy, having, orderBy, limit);
 
         ResultSet resultSet;
         try {
-            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            sql = sql.replaceAll("\\s*LIMIT\\s*\\d+", "");
+        	// System.out.println("DB:: query: " + sql);
+            Statement statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             resultSet = statement.executeQuery(sql);
         } catch (SQLException e) {
             throw new RuntimeException("SQL exception in query", e);
@@ -90,12 +84,6 @@ public class ShadowSQLiteDatabase {
 
         SQLiteCursor cursor = new SQLiteCursor(null, null, null, null);
         ((ShadowSQLiteCursor)shadowOf_(cursor)).setResultSet(resultSet);
-        try {
-			resultSet.beforeFirst();
-		} catch (SQLException e) {
-			System.out.println("SQLException in ShadowSQLiteDatabase#query");
-			
-		}
         return cursor;
     }
 
@@ -123,14 +111,20 @@ public class ShadowSQLiteDatabase {
     
     @Implementation
     public int update(String table, ContentValues values, String whereClause, String[] whereArgs) {
-        SQLStringAndBindings sqlUpdateString = buildUpdateString(table, values, whereClause, whereArgs);
+    	SQLStringAndBindings sqlUpdateString = buildUpdateString(table, values, whereClause, whereArgs);
 
         try {
+        	// System.out.println("DB:: update: " + sqlUpdateString.sql);
             PreparedStatement statement = connection.prepareStatement(sqlUpdateString.sql);
             Iterator<Object> columns = sqlUpdateString.columnValues.iterator();
             int i = 1;
             while (columns.hasNext()) {
-                statement.setObject(i++, columns.next());
+            	Object next = columns.next();
+                if (next instanceof byte[]) {
+                	statement.setBytes(i++, (byte[]) next);
+                } else {
+                	statement.setObject(i++, next);
+                }
             }
 
             return statement.executeUpdate();
@@ -141,10 +135,16 @@ public class ShadowSQLiteDatabase {
 
     @Implementation
     public int delete(String table, String whereClause, String[] whereArgs) {
-        String sql = buildDeleteString(table, whereClause, whereArgs);
+    	String sql = buildDeleteString(table, whereClause, whereArgs);
 
         try {
-            return connection.prepareStatement(sql).executeUpdate();
+        	// System.out.println("DB:: delete: " + sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            try {
+            	return statement.executeUpdate();
+            } finally {
+            	statement.close();
+            }
         } catch (SQLException e) {
             throw new RuntimeException("SQL exception in delete", e);
         }
@@ -153,55 +153,63 @@ public class ShadowSQLiteDatabase {
     public static SQLStringAndBindings buildMergeString(String table, ContentValues values) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("MERGE INTO ");
+        sb.append("INSERT OR REPLACE INTO ");
         sb.append(table);
         sb.append(" ");
 
         SQLStringAndBindings columnsValueClause = SQLite.buildColumnValuesClause(values);
         sb.append(columnsValueClause.sql);
         sb.append(";");
-
+        
         return new SQLStringAndBindings(sb.toString(), columnsValueClause.columnValues);
     }
 
     
     @Implementation
     public long replace (String table, String nullColumnHack, ContentValues values) {
-    	values.put("_ID", seq());
-    	
-    	SQLStringAndBindings sqlInsertString = buildMergeString(table, values);
+        SQLStringAndBindings sqlInsertString = buildMergeString(table, values);
         try {
-            PreparedStatement statement = connection.prepareStatement(sqlInsertString.sql, Statement.RETURN_GENERATED_KEYS);
+        	// System.out.println("DB:: replace: " + sqlInsertString.sql);
+            PreparedStatement statement = connection.prepareStatement(sqlInsertString.sql);
             Iterator<Object> columns = sqlInsertString.columnValues.iterator();
             int i = 1;
             while (columns.hasNext()) {
-                statement.setObject(i++, columns.next());
+                Object next = columns.next();
+                if (next instanceof byte[]) {
+                	statement.setBytes(i++, (byte[]) next);
+                } else {
+                	statement.setObject(i++, next);
+                }
+                
+                // System.out.println("column " + (i-1) + " is " + toString(next));
+                
             }
 
             statement.executeUpdate();
-
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.first()) {
-                return resultSet.getLong(1);
-            }
+            return -1;
         } catch (SQLException e) {
-            throw new RuntimeException("SQL exception in merge", e);
+            throw new RuntimeException("SQL exception in replace", e);
         }
-        return -1;
     }
 
+    private String toString(Object next) {
+		if (next instanceof byte[]) {
+			StringBuilder sb = new StringBuilder();
+			for (byte b: (byte[])next) {
+				sb.append(String.format("%02x ", b));
+			}
+			return sb.toString();
+		}
+		return next.toString();
+	}
 
-
-    @Implementation
+	@Implementation
     public void execSQL(String sql) throws android.database.SQLException {
         if (!isOpen()) {
             throw new IllegalStateException("database not open");
         }
 
-        // Map 'autoincrement' (sqlite) to 'auto_increment' (h2).
-        String scrubbedSQL = sql.replaceAll("(?i:autoincrement)", "auto_increment");
-        // Map 'integer' (sqlite) to 'bigint(19)' (h2).
-        scrubbedSQL = scrubbedSQL.replaceAll("(?i:integer)", "bigint(19)");
+        String scrubbedSQL = sql;
 
         try {
             connection.createStatement().execute(scrubbedSQL);

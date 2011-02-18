@@ -18,9 +18,8 @@ public class ShadowSQLiteStatement {
 			stmt = ShadowSQLiteDatabase.connection.createStatement();
 			ResultSet resultSet = stmt.executeQuery(sql);
 			
-			
 			try {
-				if (resultSet.first()) {
+				if (resultSet.next()) {
 					return resultSet.getLong(1);
 				} else {
 					throw new SQLiteDoneException();

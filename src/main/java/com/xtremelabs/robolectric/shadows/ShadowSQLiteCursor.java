@@ -13,12 +13,7 @@ import com.xtremelabs.robolectric.internal.*;
 public class ShadowSQLiteCursor extends ShadowAbstractCursor {
 
     private ResultSet resultSet;
-    private int rowCount;
-
-    @Implementation
-    public int getCount() {
-        return rowCount;
-    }
+    
 
     @Implementation
     public String[] getColumnNames() {
@@ -75,11 +70,12 @@ public class ShadowSQLiteCursor extends ShadowAbstractCursor {
     @Override
     public boolean moveToNext() {
         try {
-            resultSet.next();
+            boolean hasNext = resultSet.next();
+            System.out.println(hasNext);
+            return hasNext;
         } catch (SQLException e) {
             throw new RuntimeException("SQL exception in moveToNext", e);
         }
-        return super.moveToNext();
     }
 
     @Implementation
@@ -177,18 +173,5 @@ public class ShadowSQLiteCursor extends ShadowAbstractCursor {
 
     public void setResultSet(ResultSet result) {
         this.resultSet = result;
-        rowCount = 0;
-
-        // Cache count up front, since computing result count in JDBC
-        // is destructive to cursor position.
-        if (resultSet != null) {
-            try {
-                resultSet.beforeFirst();
-                resultSet.last();
-                rowCount = resultSet.getRow();
-            } catch (SQLException e) {
-                throw new RuntimeException("SQL exception in setResultSet", e);
-            }
-        }
     }
 }
