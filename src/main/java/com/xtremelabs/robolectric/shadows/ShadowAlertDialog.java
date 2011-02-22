@@ -121,6 +121,15 @@ public class ShadowAlertDialog extends ShadowDialog {
     public boolean[] getCheckedItems() {
         return checkedItems;
     }
+    
+    /**
+     * Non-Android accessor.
+     *
+     * @return an int indicating which position is selected
+     */
+    public int getCheckedItem() {
+    	return checkedItemIndex;
+    }
 
     /**
      * Shadows the {@code android.app.AlertDialog.Builder} class.

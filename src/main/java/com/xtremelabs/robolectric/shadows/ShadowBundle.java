@@ -1,15 +1,13 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.os.Bundle;
-import android.os.Parcelable;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
+import static com.xtremelabs.robolectric.Robolectric.*;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import android.os.*;
 
-import static com.xtremelabs.robolectric.Robolectric.shadowOf_;
+import java.io.*;
+import java.util.*;
+
+import com.xtremelabs.robolectric.internal.*;
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(Bundle.class)
@@ -80,6 +78,11 @@ public class ShadowBundle {
         if (map != null ? !map.equals(that.map) : that.map != null) return false;
 
         return true;
+    }
+    
+    @Implementation
+    public Set<String> keySet() {
+    	return map.keySet();
     }
 
     @Override @Implementation
