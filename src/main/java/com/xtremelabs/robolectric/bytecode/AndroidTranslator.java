@@ -1,24 +1,13 @@
 package com.xtremelabs.robolectric.bytecode;
 
-import android.net.Uri;
-import com.xtremelabs.robolectric.internal.DoNotInstrument;
-import com.xtremelabs.robolectric.internal.Instrument;
-import javassist.CannotCompileException;
-import javassist.ClassMap;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.CtNewConstructor;
-import javassist.CtNewMethod;
-import javassist.Modifier;
-import javassist.NotFoundException;
-import javassist.Translator;
+import android.net.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
+
+import javassist.*;
+
+import com.xtremelabs.robolectric.internal.*;
 
 @SuppressWarnings({"UnusedDeclaration"})
 public class AndroidTranslator implements Translator {
@@ -27,7 +16,13 @@ public class AndroidTranslator implements Translator {
      * so the cache file can be invalidated.
      */
     public static final int CACHE_VERSION = 19;
-
+    private static List<String> additionalClassMatching;
+    
+    public static void addThirdPartyClassTranslator(String prefix) {
+    	if (additionalClassMatching == null) additionalClassMatching = new ArrayList<String>();
+		additionalClassMatching.add(prefix);
+	}
+    
     private static final List<ClassHandler> CLASS_HANDLERS = new ArrayList<ClassHandler>();
 
     private ClassHandler classHandler;
@@ -85,6 +80,15 @@ public class AndroidTranslator implements Translator {
                         || className.startsWith("com.google.android.maps")
                         || className.equals("org.apache.http.impl.client.DefaultRequestDirector")
                         || ctClass.hasAnnotation(Instrument.class);
+        
+        if (!wantsToBeInstrumented && additionalClassMatching != null) {
+        	for (String prefix: additionalClassMatching) {
+        		if (className.equals(prefix)) {
+        			wantsToBeInstrumented = true;
+        			break;
+        		}
+        	}
+        }
 
         if (wantsToBeInstrumented && !ctClass.hasAnnotation(DoNotInstrument.class)) {
             int modifiers = ctClass.getModifiers();
