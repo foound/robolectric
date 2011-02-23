@@ -89,7 +89,7 @@ public class AndroidTranslator implements Translator {
         		}
         	}
         }
-
+        
         if (wantsToBeInstrumented && !ctClass.hasAnnotation(DoNotInstrument.class)) {
             int modifiers = ctClass.getModifiers();
             if (Modifier.isFinal(modifiers)) {

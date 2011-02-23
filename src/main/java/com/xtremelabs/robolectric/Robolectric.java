@@ -23,7 +23,6 @@ import org.apache.http.*;
 import org.apache.http.impl.client.*;
 
 import com.xtremelabs.robolectric.bytecode.*;
-import com.xtremelabs.robolectric.internal.*;
 import com.xtremelabs.robolectric.shadows.*;
 import com.xtremelabs.robolectric.tester.org.apache.http.*;
 import com.xtremelabs.robolectric.util.*;
@@ -51,9 +50,8 @@ public class Robolectric {
         RobolectricInternals.bindShadowClass(shadowClass);
     }
     
-    public static void bindShadowThirdPartyClass(Class<?> shadowClass) {
-    	Implements realClass = shadowClass.getAnnotation(Implements.class);
-        AndroidTranslator.addThirdPartyClassTranslator(realClass.toString());
+    public static void bindShadowThirdPartyClass(String classToBeShadowed, Class<?> shadowClass) {
+        AndroidTranslator.addThirdPartyClassTranslator(classToBeShadowed);
     	bindShadowClass(shadowClass);
     }
 
