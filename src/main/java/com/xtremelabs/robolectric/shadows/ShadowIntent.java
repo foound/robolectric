@@ -1,27 +1,17 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Parcelable;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.internal.RealObject;
-import com.xtremelabs.robolectric.util.Join;
+import static com.xtremelabs.robolectric.Robolectric.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import android.content.*;
+import android.net.*;
+import android.os.*;
 
-import static com.xtremelabs.robolectric.Robolectric.shadowOf;
+import java.io.*;
+import java.util.*;
+
+import com.xtremelabs.robolectric.*;
+import com.xtremelabs.robolectric.internal.*;
+import com.xtremelabs.robolectric.util.*;
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(Intent.class)
@@ -112,6 +102,12 @@ public class ShadowIntent {
     @Implementation
     public void setFlags(int flags) {
         this.flags = flags;
+    }
+    
+    @Implementation
+    public Intent addFlags(int flags) {
+        this.flags |= flags;
+        return realIntent;
     }
 
     @Implementation
