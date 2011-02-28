@@ -125,6 +125,12 @@ public class ShadowIntent {
     }
 
     @Implementation
+    public Intent putExtra(String key, boolean value) {
+    	extras.put(key, value);
+    	return realIntent;
+    }
+    
+    @Implementation
     public Intent putExtra(String key, int value) {
         extras.put(key, value);
         return realIntent;
@@ -178,6 +184,12 @@ public class ShadowIntent {
     @Implementation
     public Parcelable getParcelableExtra(String name) {
         return (Parcelable) extras.get(name);
+    }
+    
+    @Implementation
+    public boolean getBooleanExtra(String name, boolean defaultValue) {
+    	Boolean foundValue = (Boolean) extras.get(name);
+    	return foundValue == null ? defaultValue : foundValue;
     }
 
     @Implementation
