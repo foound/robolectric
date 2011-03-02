@@ -338,7 +338,7 @@ public class ShadowAlertDialog extends ShadowDialog {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClick(dialog, which);
+                	if (listener != null) listener.onClick(dialog, which);
                 }
             });
             return button;
