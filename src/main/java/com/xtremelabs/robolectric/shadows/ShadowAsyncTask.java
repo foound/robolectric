@@ -57,7 +57,11 @@ public class ShadowAsyncTask<Params, Progress, Result> {
 
                 Robolectric.getUiThreadScheduler().post(new Runnable() {
                     @Override public void run() {
-                        getBridge().onPostExecute(result);
+                    	if (cancelled) {
+                    		getBridge().onCancelled();
+                    	} else {
+                    		getBridge().onPostExecute(result);
+                    	}
                     }
                 });
             }
