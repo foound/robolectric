@@ -1,8 +1,8 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.location.Address;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
+import android.location.*;
+
+import com.xtremelabs.robolectric.internal.*;
 
 
 @SuppressWarnings({"UnusedDeclaration"})
@@ -46,6 +46,11 @@ public class ShadowAddress {
         return addressLine1;
     }
 
+    @Implementation
+    public int getMaxAddressLineIndex () {
+    	return addressLine1 != null? 1: 0;
+    }
+    
     @Implementation
     public void setLocality(String locality) {
         this.locality = locality;

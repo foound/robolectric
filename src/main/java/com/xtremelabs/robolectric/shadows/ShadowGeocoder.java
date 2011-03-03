@@ -1,14 +1,11 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.location.Address;
-import android.location.Geocoder;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
+import android.location.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.io.*;
+import java.util.*;
+
+import com.xtremelabs.robolectric.internal.*;
 
 /**
  * A shadow for Geocoder that supports simulated responses and failures
@@ -22,6 +19,8 @@ public class ShadowGeocoder {
     private String zip;
     private String countryCode;
     private boolean wasCalled;
+    private boolean wasCalled2;
+    private String queriedLocationName;
     private double lastLatitude;
     private double lastLongitude;
     private double simulatedLatitude;
@@ -47,12 +46,15 @@ public class ShadowGeocoder {
 
     @Implementation
     public List<Address> getFromLocationName(String locationName, int maxResults) throws IOException {
+        wasCalled2 = true;
+    	queriedLocationName = locationName;
         if (shouldSimulateGeocodeException) {
             throw new IOException("Simulated geocode exception");
         }
         Address address = new Address(Locale.getDefault());
         address.setLatitude(simulatedLatitude);
         address.setLongitude(simulatedLongitude);
+        address.setAddressLine(0, addressLine1);
         return oneElementList(address);
     }
 
@@ -94,15 +96,26 @@ public class ShadowGeocoder {
     public void setShouldSimulateGeocodeException(boolean shouldSimulateException) {
         this.shouldSimulateGeocodeException = true;
     }
-
+    
     /**
      * Non-Android accessor that indicates whether {@link #getFromLocation(double, double, int)} was called.
      *
      * @return whether {@link #getFromLocation(double, double, int)} was called.
      */
     public boolean wasGetFromLocationCalled() {
-        return wasCalled;
+    	return wasCalled;
     }
+
+    /**
+     * Non-Android accessor that indicates whether getFromLocationName was called
+     */
+    public boolean wasGetFromLocationNameCalled() {
+        return wasCalled2;
+    }
+    
+    public String getQueriedLocationName() {
+		return queriedLocationName;
+	}
 
     public double getLastLongitude() {
         return lastLongitude;
