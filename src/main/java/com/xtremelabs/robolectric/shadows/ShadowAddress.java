@@ -48,7 +48,7 @@ public class ShadowAddress {
 
     @Implementation
     public int getMaxAddressLineIndex () {
-    	return addressLine1 != null? 1: 0;
+    	return addressLine1 != null? 0: -1;
     }
     
     @Implementation

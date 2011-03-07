@@ -29,6 +29,7 @@ public class ShadowAlertDialog extends ShadowDialog {
     private Button negativeButton;
     private Button neutralButton;
     private boolean isCancelable;
+	private View view;
 
     /**
      * Non-Android accessor.
@@ -102,14 +103,23 @@ public class ShadowAlertDialog extends ShadowDialog {
 	public String getTitle() {
         return title;
     }
-
+    
     /**
      * Non-Android accessor.
      *
      * @return the message displayed in the dialog
      */
     public String getMessage() {
-        return message;
+    	return message;
+    }
+
+    /**
+     * Non-Android accessor.
+     *
+     * @return the view set on {@link AlertDialog.Builder#setView(View)}
+     */
+    public View getView() {
+        return view;
     }
 
     /**
@@ -156,6 +166,8 @@ public class ShadowAlertDialog extends ShadowDialog {
         private boolean isCancelable;
         private boolean isSingleItem;
         private int checkedItem;
+
+		private View view;
 
         /**
          * just stashes the context for later use
@@ -234,6 +246,12 @@ public class ShadowAlertDialog extends ShadowDialog {
         	this.message = message.toString();
         	return realBuilder;
         }
+        
+        @Implementation
+        public AlertDialog.Builder setView(View view) {
+        	this.view = view;
+        	return realBuilder;
+        }
 
         @Implementation
         public AlertDialog.Builder setMessage(int messageId) {
@@ -309,6 +327,7 @@ public class ShadowAlertDialog extends ShadowDialog {
             latestAlertDialog.items = items;
             latestAlertDialog.title = title;
             latestAlertDialog.message = message;
+            latestAlertDialog.view = view;
             latestAlertDialog.clickListener = clickListener;
             latestAlertDialog.isMultiItem = isMultiItem;
             latestAlertDialog.isSingleItem = isSingleItem;
