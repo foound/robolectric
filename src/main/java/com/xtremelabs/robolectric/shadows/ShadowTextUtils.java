@@ -2,12 +2,11 @@ package com.xtremelabs.robolectric.shadows;
 
 import android.text.*;
 
-import com.xtremelabs.robolectric.internal.*;
+import java.util.*;
 
-/**
- * Shadow for the {@code TextUtils} class that implements the {@link #expandTemplate(CharSequence, CharSequence...)}
- * method.
- */
+import com.xtremelabs.robolectric.internal.*;
+import com.xtremelabs.robolectric.util.*;
+
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(TextUtils.class)
 public class ShadowTextUtils {
@@ -21,7 +20,6 @@ public class ShadowTextUtils {
         }
         return s;
     }
-    
 
     /**
      * Returns a string containing the tokens joined by delimiters.
@@ -43,4 +41,13 @@ public class ShadowTextUtils {
         return sb.toString();
     }
 
+    @Implementation
+    public static boolean isEmpty(CharSequence s) {
+      return (s == null || s.length() == 0);
+    }
+
+    @Implementation
+    public static String join(CharSequence delimiter, Iterable tokens) {
+        return Join.join((String) delimiter, (Collection) tokens);
+    }
 }

@@ -11,6 +11,7 @@ public class StringResourceLoader extends XpathResourceXmlLoader implements Reso
 
     public String getValue(int resourceId) {
         String escaped = stringResolver.getValue(resourceExtractor.getResourceName(resourceId));
+        if (escaped == null) return escaped;
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < escaped.length(); i++) {
         	char c = escaped.charAt(i);
