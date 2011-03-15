@@ -87,6 +87,11 @@
             <version>1.8.5</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+        	<groupId>com.zentus</groupId>
+        	<artifactId>sqlitejdbc</artifactId>
+        	<version>056</version>
+        </dependency>
     </dependencies>
 
     <build>
